@@ -6,23 +6,40 @@ const chatInputForm=document.querySelector('.chat-input-form');
 const chatInput=document.querySelector('.chat-input');
 const clearChatBtn=document.querySelector('.clear-chat-button');
 const messages=JSON.parse(localStorage.getItem('messages')) || [];
+let messageSender='Fazal';
 
 const chatMessageElement=(message) =>`
-<div class="message ${message.sender === 'Fazal' ? 'blue-bg' : 'gray-bg'}">
+<div class="message ${message.sender === messageSender ? 'blue-bg' : 'gray-bg'}">
   <div class="message-sender">${message.sender}:</div>
   <div class="message-text">${message.text}</div>
   <div class="message-time">${message.timestamp}</div>
 </div>
 `
-window.onload=()=>{
+const updateMessageColors=()=>{
+    document.querySelectorAll('.message').forEach((messageElement)=>{
+        const senderElement=messageElement.querySelector('.message-sender');
+        const senderName=senderElement.textContent.replace(':','').trim();
+        const isActiveSender=senderName===messageSender;
+
+        messageElement.classList.toggle('blue-bg',isActiveSender);
+        messageElement.classList.toggle('gray-bg',!isActiveSender);
+    })
+}
+const renderMessages=()=>{
     if(messages.length>0){
         chatMessages.innerHTML='';
         messages.forEach((message)=>{
             chatMessages.innerHTML+=chatMessageElement(message);
         })
+        chatMessages.scrollTop=chatMessages.scrollHeight;
+    }
+    else{
+        updateMessageColors();
     }
 }
-let messageSender='Fazal';
+window.onload=()=>{
+    renderMessages();
+}
 const updateMessageSender=(name)=>{
     messageSender=name;
     chatHeader.textContent=`${messageSender} chatting...`;
@@ -37,6 +54,7 @@ const updateMessageSender=(name)=>{
         waleedSelectorBtn.classList.add('active-person');
         fazalSelectorBtn.classList.remove('active-person');
     }
+    renderMessages();
     chatInput.focus();
 }
 
