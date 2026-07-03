@@ -1,12 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat App</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    
-</body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="person-selector">
+      <button class="person-selector-button active-person" id="fazal-selector">
+        Fazal
+      </button>
+      <button class="person-selector-button" id="waleed-selector">
+        Waleed
+      </button>
+    </div>
+
+    <div class="chat-container">
+      <h2 class="chat-header">Fazal chatting...</h2>
+      <div class="chat-messages">
+        <div class="message blue-bg">
+          <div class="message-sender">Fazal:</div>
+          <div class="message-text">Hey Waleed, how's it going?</div>
+          <div class="message-time">10:00 AM</div>
+        </div>
+        <div class="message gray-bg">
+          <div class="message-sender">Waleed:</div>
+          <div class="message-text">
+            Hey Fazal! I'm good, thanks. How about you?
+          </div>
+          <div class="message-time">10:01 AM</div>
+        </div>
+      </div>
+      <form class="chat-input-form">
+        <input
+          type="text"
+          class="chat-input"
+          required
+          placeholder="Type a message..."
+        />
+        <button type="submit" class="chat-submit">Send</button>
+      </form>
+      <button class="button clear-chat-button">Clear Chat</button>
+    </div>
+    <script src="app.js"></script>
+  </body>
 </html>
