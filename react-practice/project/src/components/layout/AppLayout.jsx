@@ -37,13 +37,18 @@ function AppLayout() {
             <Menu aria-hidden="true" size={20} />
           </button>
 
+          <div className="mobile-topbar-brand">
+            <strong>Arbisoft internship 2026</strong>
+            <span>React practice portal</span>
+          </div>
+
           <label className="workspace-search">
             <Search aria-hidden="true" size={18} />
-            <input aria-label="Search workspace" placeholder="Search workspace" />
+            <input aria-label="Search internship workspace" placeholder="Search workspace" />
           </label>
 
           <div className="topbar-actions">
-            <span className="environment-pill">Practice</span>
+            <span className="environment-pill">Internship</span>
             <AuthControls />
             <ThemeToggle />
             <button aria-label="Notifications" className="icon-button" type="button">
