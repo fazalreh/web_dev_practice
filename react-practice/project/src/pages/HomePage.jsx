@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 
 import { useHealthCheckQuery } from '../app/api/baseApi'
+import AsyncState from '../components/feedback/AsyncState'
 import PageHeader from '../components/layout/PageHeader'
 import SummaryCard from '../components/layout/SummaryCard'
 import { selectAuth } from '../features/auth/authSlice'
@@ -14,9 +15,10 @@ const stackItems = [
 ]
 
 function HomePage() {
-  const { data, isLoading } = useHealthCheckQuery()
+  const { data, isError, isFetching, isLoading, refetch } = useHealthCheckQuery()
   const auth = useSelector(selectAuth)
   const hasInvalidSupabaseConfig = data?.invalidKeys?.length > 0
+  const isCheckingSupabase = isLoading || isFetching
   const supabaseStatus = data?.configured
     ? 'Ready'
     : hasInvalidSupabaseConfig
@@ -48,6 +50,29 @@ function HomePage() {
       tone: data?.clientReady ? 'success' : 'warning',
     },
   ]
+  const supabaseCheckState = isError
+    ? {
+        message: 'The configuration check could not run.',
+        tone: 'danger',
+        title: 'Supabase check failed',
+      }
+    : isCheckingSupabase
+      ? {
+          isLoading: true,
+          message: 'Checking environment values and client readiness.',
+          title: 'Checking Supabase',
+        }
+      : data?.configured
+        ? {
+            message: data.message,
+            tone: 'success',
+            title: 'Supabase ready',
+          }
+        : {
+            message: data?.message ?? 'Supabase environment values are not ready.',
+            tone: hasInvalidSupabaseConfig ? 'danger' : 'empty',
+            title: hasInvalidSupabaseConfig ? 'Supabase invalid' : 'Supabase waiting',
+          }
 
   return (
     <div className="page-stack">
@@ -74,6 +99,16 @@ function HomePage() {
         <SummaryCard label="Routes" meta="Overview, admin, customer" value="3" />
       </section>
 
+      <AsyncState
+        actionLabel="Retry"
+        compact
+        isLoading={supabaseCheckState.isLoading}
+        message={supabaseCheckState.message}
+        onAction={isError ? () => refetch() : undefined}
+        title={supabaseCheckState.title}
+        tone={supabaseCheckState.tone}
+      />
+
       <section className="content-section">
         <div className="section-heading">
           <p className="eyebrow">Stack</p>
@@ -98,12 +133,30 @@ function HomePage() {
           <h2>Configuration</h2>
         </div>
         <div className="task-list">
-          {supabaseRows.map((row) => (
-            <article className={`task-row ${row.tone}`} key={row.label}>
-              <strong>{row.label}</strong>
-              <span>{row.status}</span>
-            </article>
-          ))}
+          {isCheckingSupabase ? (
+            <AsyncState
+              compact
+              isLoading
+              message="Preparing configuration details."
+              title="Loading configuration"
+            />
+          ) : isError ? (
+            <AsyncState
+              actionLabel="Retry"
+              compact
+              message="Configuration rows could not load."
+              onAction={() => refetch()}
+              title="Configuration error"
+              tone="danger"
+            />
+          ) : (
+            supabaseRows.map((row) => (
+              <article className={`task-row ${row.tone}`} key={row.label}>
+                <strong>{row.label}</strong>
+                <span>{row.status}</span>
+              </article>
+            ))
+          )}
         </div>
       </section>
     </div>

@@ -14,6 +14,7 @@ import {
 import { useSelector } from 'react-redux'
 
 import { useGetCustomerDashboardQuery } from '../app/api/baseApi'
+import AsyncState, { SummarySkeleton } from '../components/feedback/AsyncState'
 import PageHeader from '../components/layout/PageHeader'
 import SummaryCard from '../components/layout/SummaryCard'
 import { selectAuth } from '../features/auth/authSlice'
@@ -59,13 +60,31 @@ function CustomerPage() {
   const accountEmail = dashboard?.profile?.email ?? 'Signed-in customer'
   const profileRoleLabel = dashboard?.profile?.roleLabel ?? roleLabel
   const MessageIcon = latestMessage ? messageIcons[latestMessage.icon] ?? Bell : Bell
-  const dataStatus = isError
-    ? 'Customer dashboard data could not load.'
-    : isLoading
-      ? 'Loading customer dashboard data.'
-      : isFetching
-        ? 'Refreshing customer dashboard data.'
-        : `Dashboard synced ${dashboard?.updatedAt ?? 'now'}.`
+  const isInitialLoading = isLoading && !dashboard
+  const isRefreshing = isFetching && !isInitialLoading
+  const dashboardStatus = isError
+    ? {
+        message: 'The customer dashboard could not load.',
+        tone: 'danger',
+        title: 'Dashboard error',
+      }
+    : isInitialLoading
+      ? {
+          isLoading: true,
+          message: 'Fetching profile, messages, records, and requests.',
+          title: 'Loading customer dashboard',
+        }
+      : isRefreshing
+        ? {
+            isLoading: true,
+            message: 'Refreshing the latest customer data.',
+            title: 'Syncing dashboard',
+          }
+        : {
+            message: `Last sync ${dashboard?.updatedAt ?? 'now'}.`,
+            tone: 'success',
+            title: 'Dashboard synced',
+          }
 
   return (
     <div className="page-stack">
@@ -102,18 +121,30 @@ function CustomerPage() {
 
       <section className="summary-grid" aria-label="Customer summary">
         <SummaryCard label="Role" meta="Workspace scope" tone="success" value={roleLabel} />
-        {customerStats.map((stat) => (
-          <SummaryCard
-            key={stat.label}
-            label={stat.label}
-            meta={stat.meta}
-            tone={stat.tone}
-            value={stat.value}
-          />
-        ))}
+        {isInitialLoading ? (
+          <SummarySkeleton count={3} />
+        ) : (
+          customerStats.map((stat) => (
+            <SummaryCard
+              key={stat.label}
+              label={stat.label}
+              meta={stat.meta}
+              tone={stat.tone}
+              value={stat.value}
+            />
+          ))
+        )}
       </section>
 
-      <div className={isError ? 'data-alert danger' : 'data-alert'}>{dataStatus}</div>
+      <AsyncState
+        actionLabel="Retry"
+        compact
+        isLoading={dashboardStatus.isLoading}
+        message={dashboardStatus.message}
+        onAction={isError ? () => refetch() : undefined}
+        title={dashboardStatus.title}
+        tone={dashboardStatus.tone}
+      />
 
       <section className="customer-dashboard-grid">
         <div className="dashboard-panel wide-panel">
@@ -123,7 +154,14 @@ function CustomerPage() {
           </div>
 
           <div className="customer-action-list">
-            {nextActions.length > 0 ? (
+            {isInitialLoading ? (
+              <AsyncState
+                compact
+                isLoading
+                message="Fetching next steps."
+                title="Loading actions"
+              />
+            ) : nextActions.length > 0 ? (
               nextActions.map((item) => {
                 const Icon = actionIcons[item.icon] ?? UploadCloud
 
@@ -150,7 +188,7 @@ function CustomerPage() {
                 )
               })
             ) : (
-              <div className="data-empty">No customer actions.</div>
+              <AsyncState compact message="No account actions are waiting." title="No actions" />
             )}
           </div>
         </div>
@@ -166,8 +204,17 @@ function CustomerPage() {
               <UserRound aria-hidden="true" size={24} />
             </span>
             <div>
-              <strong>{accountName}</strong>
-              <p>{accountEmail}</p>
+              {isInitialLoading ? (
+                <>
+                  <span className="skeleton-line short"></span>
+                  <span className="skeleton-line"></span>
+                </>
+              ) : (
+                <>
+                  <strong>{accountName}</strong>
+                  <p>{accountEmail}</p>
+                </>
+              )}
             </div>
           </div>
 
@@ -190,7 +237,14 @@ function CustomerPage() {
           </div>
 
           <div className="record-list">
-            {recordItems.length > 0 ? (
+            {isInitialLoading ? (
+              <AsyncState
+                compact
+                isLoading
+                message="Fetching customer files."
+                title="Loading records"
+              />
+            ) : recordItems.length > 0 ? (
               recordItems.map((item) => (
                 <article className="record-row" key={item.title}>
                   <div>
@@ -201,7 +255,7 @@ function CustomerPage() {
                 </article>
               ))
             ) : (
-              <div className="data-empty">No customer records.</div>
+              <AsyncState compact message="No records are available." title="No records" />
             )}
           </div>
         </div>
@@ -212,7 +266,14 @@ function CustomerPage() {
             <h2>Latest update</h2>
           </div>
 
-          {latestMessage ? (
+          {isInitialLoading ? (
+            <AsyncState
+              compact
+              isLoading
+              message="Fetching latest message."
+              title="Loading message"
+            />
+          ) : latestMessage ? (
             <article className="message-preview">
               <span className="activity-icon">
                 <MessageIcon aria-hidden="true" size={18} />
@@ -223,7 +284,7 @@ function CustomerPage() {
               </div>
             </article>
           ) : (
-            <div className="data-empty">No customer messages.</div>
+            <AsyncState compact message="No customer messages." title="No messages" />
           )}
         </div>
 
@@ -234,17 +295,28 @@ function CustomerPage() {
           </div>
 
           <div className="health-grid">
-            {supportItems.map((item) => {
-              const Icon = supportIcons[item.icon] ?? LifeBuoy
+            {isInitialLoading ? (
+              <AsyncState
+                compact
+                isLoading
+                message="Checking support status."
+                title="Loading support"
+              />
+            ) : supportItems.length > 0 ? (
+              supportItems.map((item) => {
+                const Icon = supportIcons[item.icon] ?? LifeBuoy
 
-              return (
-                <article className="health-item" key={item.label}>
-                  <Icon aria-hidden="true" size={19} />
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </article>
-              )
-            })}
+                return (
+                  <article className="health-item" key={item.label}>
+                    <Icon aria-hidden="true" size={19} />
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </article>
+                )
+              })
+            ) : (
+              <AsyncState compact message="No support status available." title="No support data" />
+            )}
           </div>
         </div>
       </section>
