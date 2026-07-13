@@ -1,6 +1,10 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient'
+import {
+  getSupabaseSetupMessage,
+  supabaseEnvStatus,
+} from '../../lib/supabaseConfig'
 
 export const appApi = createApi({
   reducerPath: 'appApi',
@@ -13,6 +17,10 @@ export const appApi = createApi({
           service: 'Supabase',
           configured: isSupabaseConfigured,
           clientReady: Boolean(supabase),
+          invalidKeys: supabaseEnvStatus.invalidKeys,
+          message: getSupabaseSetupMessage(),
+          missingKeys: supabaseEnvStatus.missingKeys,
+          projectHost: supabaseEnvStatus.projectHost,
         },
       }),
     }),

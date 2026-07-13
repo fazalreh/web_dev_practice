@@ -25,6 +25,8 @@
   --success-text: #18734f;
   --warning-bg: #fff3d6;
   --warning-text: #946200;
+  --danger-bg: #fde8e8;
+  --danger-text: #b42318;
   --overlay-bg: rgba(15, 23, 42, 0.4);
 }
 
@@ -51,6 +53,8 @@
   --success-text: #74d8a7;
   --warning-bg: #3c2f14;
   --warning-text: #ffd36f;
+  --danger-bg: #401d1f;
+  --danger-text: #ff9b9b;
   --overlay-bg: rgba(2, 6, 12, 0.62);
 }
 
