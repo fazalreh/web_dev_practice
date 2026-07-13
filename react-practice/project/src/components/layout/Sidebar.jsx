@@ -1,9 +1,19 @@
 import { X } from 'lucide-react'
+import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
+import { selectAuth } from '../../features/auth/authSlice'
 import { navigationItems } from '../../routes/navigation'
 
 function Sidebar({ isOpen, onClose }) {
+  const auth = useSelector(selectAuth)
+  const sessionLabel =
+    auth.status === 'authenticated'
+      ? auth.user?.email
+      : auth.status === 'checking'
+        ? 'Checking session'
+        : 'Not signed in'
+
   return (
     <aside className={isOpen ? 'sidebar open' : 'sidebar'}>
       <div className="sidebar-header">
@@ -49,8 +59,8 @@ function Sidebar({ isOpen, onClose }) {
       <div className="sidebar-footer">
         <span className="status-dot"></span>
         <div>
-          <strong>Demo mode</strong>
-          <small>Supabase pending</small>
+          <strong>{auth.status}</strong>
+          <small>{sessionLabel}</small>
         </div>
       </div>
     </aside>

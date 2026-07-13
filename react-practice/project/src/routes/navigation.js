@@ -1,4 +1,4 @@
-import { Home, ShieldCheck, UserRound } from 'lucide-react'
+import { Home, LogIn, ShieldCheck, UserRound, UserRoundPlus } from 'lucide-react'
 
 export const navigationItems = [
   {
@@ -16,5 +16,15 @@ export const navigationItems = [
     to: '/customer',
     label: 'Customer',
     icon: UserRound,
+  },
+  {
+    to: '/login',
+    label: 'Login',
+    icon: LogIn,
+  },
+  {
+    to: '/signup',
+    label: 'Signup',
+    icon: UserRoundPlus,
   },
 ]

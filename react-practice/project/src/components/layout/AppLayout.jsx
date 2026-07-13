@@ -2,6 +2,7 @@ import { Bell, Menu, Search } from 'lucide-react'
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
+import AuthControls from '../../features/auth/AuthControls'
 import ThemeToggle from '../../features/theme/ThemeToggle'
 import Sidebar from './Sidebar'
 
@@ -43,6 +44,7 @@ function AppLayout() {
 
           <div className="topbar-actions">
             <span className="environment-pill">Practice</span>
+            <AuthControls />
             <ThemeToggle />
             <button aria-label="Notifications" className="icon-button" type="button">
               <Bell aria-hidden="true" size={19} />

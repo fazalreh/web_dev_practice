@@ -7,3 +7,8 @@ This project reads Supabase values from local Vite environment variables.
 3. Paste the project URL and anon public key from the Supabase project settings.
 4. Restart the Vite dev server after changing `.env`.
 
+Do not commit `.env`. The real Supabase values stay local.
+
+For the auth pages, keep the Email provider enabled in Supabase Authentication
+settings. If email confirmation is enabled, new users must confirm their email
+before they can sign in.
