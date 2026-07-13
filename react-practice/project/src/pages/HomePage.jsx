@@ -1,48 +1,60 @@
 import { useSelector } from 'react-redux'
 
 import { useHealthCheckQuery } from '../app/api/baseApi'
+import PageHeader from '../components/layout/PageHeader'
+import SummaryCard from '../components/layout/SummaryCard'
 import { selectAuth } from '../features/auth/authSlice'
 
 const stackItems = [
-  'React Router',
-  'Redux Toolkit',
-  'RTK Query',
-  'Supabase client',
+  { label: 'React Router', detail: 'Workspace routes' },
+  { label: 'Redux Toolkit', detail: 'Shared state' },
+  { label: 'RTK Query', detail: 'Data requests' },
+  { label: 'Supabase client', detail: 'Auth and storage' },
 ]
 
 function HomePage() {
   const { data, isLoading } = useHealthCheckQuery()
   const auth = useSelector(selectAuth)
-  const supabaseStatus = data?.configured ? 'Ready' : 'Waiting for env'
+  const supabaseStatus = data?.configured ? 'Ready' : 'Waiting'
 
   return (
-    <section className="home-grid">
-      <div className="intro-panel">
-        <p className="eyebrow">Fazal Sync</p>
-        <h1>Frontend foundation</h1>
-        <p className="page-copy">
-          The app is ready for routing, shared state, server data, and Supabase
-          authentication work.
-        </p>
-      </div>
+    <div className="page-stack">
+      <PageHeader
+        description="Workspace activity, access status, and project structure in one view."
+        eyebrow="Overview"
+        title="Operations overview"
+      />
 
-      <div className="status-panel">
-        <div>
-          <p className="eyebrow">Current session</p>
-          <h2>{auth.status}</h2>
+      <section className="summary-grid" aria-label="Project summary">
+        <SummaryCard label="Session" meta="Redux state" value={auth.status} />
+        <SummaryCard
+          label="Supabase"
+          meta={isLoading ? 'Checking client' : 'Client guard'}
+          tone={data?.configured ? 'success' : 'warning'}
+          value={supabaseStatus}
+        />
+        <SummaryCard label="Routes" meta="Overview, admin, customer" value="3" />
+        <SummaryCard label="Layout" meta="Desktop and mobile" tone="success" value="Ready" />
+      </section>
+
+      <section className="content-section">
+        <div className="section-heading">
+          <p className="eyebrow">Stack</p>
+          <h2>Core pieces</h2>
         </div>
-        <div className="status-pill">{isLoading ? 'Checking' : supabaseStatus}</div>
-      </div>
-
-      <div className="stack-list" aria-label="Core stack">
-        {stackItems.map((item) => (
-          <div className="stack-item" key={item}>
-            <span></span>
-            {item}
-          </div>
-        ))}
-      </div>
-    </section>
+        <div className="stack-grid">
+          {stackItems.map((item) => (
+            <article className="stack-card" key={item.label}>
+              <span aria-hidden="true"></span>
+              <div>
+                <strong>{item.label}</strong>
+                <p>{item.detail}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
   )
 }
 
