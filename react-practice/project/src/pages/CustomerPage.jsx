@@ -16,7 +16,7 @@ function CustomerPage() {
       <section className="summary-grid" aria-label="Customer summary">
         <SummaryCard label="Role" meta="Workspace scope" value="Customer" />
         <SummaryCard label="Areas" meta="Account sections" value="3" />
-        <SummaryCard label="Access" meta="Auth pending" tone="warning" value="Pending" />
+        <SummaryCard label="Access" meta="Customer role required" tone="success" value="Protected" />
       </section>
 
       <section className="content-section">

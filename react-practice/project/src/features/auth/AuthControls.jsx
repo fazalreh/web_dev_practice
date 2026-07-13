@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { clearSession, selectAuth } from './authSlice'
 import { signOutCurrentUser } from './authService'
+import { getRoleLabel } from '../../lib/roles'
 
 function AuthControls() {
   const auth = useSelector(selectAuth)
@@ -32,7 +33,9 @@ function AuthControls() {
   if (auth.status === 'authenticated') {
     return (
       <div className="auth-actions">
-        <span className="auth-pill">{auth.user?.email ?? 'Signed in'}</span>
+        <span className="auth-pill">
+          {auth.user?.email ?? 'Signed in'} · {getRoleLabel(auth.role)}
+        </span>
         <button
           aria-label="Sign out"
           className="icon-button"

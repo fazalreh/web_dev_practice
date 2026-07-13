@@ -465,6 +465,12 @@ h2 {
   width: min(100%, 34rem);
 }
 
+.route-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
 .auth-card {
   background: var(--card-bg);
   border: 1px solid var(--border);

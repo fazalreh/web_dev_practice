@@ -4,6 +4,7 @@ import { useHealthCheckQuery } from '../app/api/baseApi'
 import PageHeader from '../components/layout/PageHeader'
 import SummaryCard from '../components/layout/SummaryCard'
 import { selectAuth } from '../features/auth/authSlice'
+import { getRoleLabel } from '../lib/roles'
 
 const stackItems = [
   { label: 'React Router', detail: 'Workspace routes' },
@@ -59,13 +60,18 @@ function HomePage() {
       <section className="summary-grid" aria-label="Project summary">
         <SummaryCard label="Session" meta="Redux state" value={auth.status} />
         <SummaryCard
+          label="Role"
+          meta="Auth metadata"
+          tone={auth.role ? 'success' : 'warning'}
+          value={auth.role ? getRoleLabel(auth.role) : 'Guest'}
+        />
+        <SummaryCard
           label="Supabase"
           meta={isLoading ? 'Checking client' : data?.message}
           tone={supabaseTone}
           value={supabaseStatus}
         />
         <SummaryCard label="Routes" meta="Overview, admin, customer" value="3" />
-        <SummaryCard label="Layout" meta="Desktop and mobile" tone="success" value="Ready" />
       </section>
 
       <section className="content-section">

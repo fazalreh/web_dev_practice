@@ -7,7 +7,7 @@ import { setSessionUser } from '../features/auth/authSlice'
 import { signUpWithEmail } from '../features/auth/authService'
 import { getSupabaseSetupMessage } from '../lib/supabaseConfig'
 import { isSupabaseConfigured } from '../lib/supabaseClient'
-import { USER_ROLES } from '../lib/roles'
+import { getRoleLabel, USER_ROLE_VALUES, USER_ROLES } from '../lib/roles'
 
 function SignupPage() {
   const dispatch = useDispatch()
@@ -110,8 +110,11 @@ function SignupPage() {
               onChange={(event) => setRole(event.target.value)}
               value={role}
             >
-              <option value={USER_ROLES.CUSTOMER}>Customer</option>
-              <option value={USER_ROLES.ADMIN}>Admin</option>
+              {USER_ROLE_VALUES.map((roleValue) => (
+                <option key={roleValue} value={roleValue}>
+                  {getRoleLabel(roleValue)}
+                </option>
+              ))}
             </select>
           </label>
 
