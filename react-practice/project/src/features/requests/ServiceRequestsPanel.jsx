@@ -7,6 +7,7 @@ import {
   useGetServiceRequestsQuery,
   useUpdateServiceRequestMutation,
 } from '../../app/api/baseApi'
+import AsyncState from '../../components/feedback/AsyncState'
 import { USER_ROLES } from '../../lib/roles'
 
 const EMPTY_REQUEST_FORM = {
@@ -68,7 +69,7 @@ function ServiceRequestsPanel({ auth, mode }) {
     }),
     [email, ownerName, role],
   )
-  const { data, isError, isFetching, isLoading } = useGetServiceRequestsQuery(actor, {
+  const { data, isError, isFetching, isLoading, refetch } = useGetServiceRequestsQuery(actor, {
     skip: !role,
   })
   const [createRequest, createState] = useCreateServiceRequestMutation()
@@ -80,6 +81,15 @@ function ServiceRequestsPanel({ auth, mode }) {
   const [notice, setNotice] = useState(null)
   const requests = data?.items ?? []
   const isMutating = createState.isLoading || updateState.isLoading || deleteState.isLoading
+  const isInitialLoading = isLoading && !data
+  const isRefreshing = isFetching && !isInitialLoading
+  const mutationStatus = createState.isLoading
+    ? 'Creating service request.'
+    : updateState.isLoading
+      ? 'Saving service request.'
+      : deleteState.isLoading
+        ? 'Deleting service request.'
+        : null
   const panelTitle = isAdminMode ? 'All service requests' : 'My service requests'
   const panelEyebrow = isAdminMode ? 'Admin CRUD' : 'Customer CRUD'
 
@@ -352,7 +362,34 @@ function ServiceRequestsPanel({ auth, mode }) {
         <h2>{panelTitle}</h2>
       </div>
 
+      {!role && (
+        <AsyncState
+          compact
+          message="A signed-in role is required before requests can load."
+          title="Requests unavailable"
+          tone="danger"
+        />
+      )}
+
       {notice && <div className={`form-alert ${notice.tone}`}>{notice.text}</div>}
+
+      {mutationStatus && (
+        <AsyncState
+          compact
+          isLoading
+          message="Keeping the request list in sync."
+          title={mutationStatus}
+        />
+      )}
+
+      {isRefreshing && (
+        <AsyncState
+          compact
+          isLoading
+          message="Fetching the latest request changes."
+          title="Refreshing service requests"
+        />
+      )}
 
       {isCustomerMode && (
         <form className="request-form" onSubmit={handleCreateRequest}>
@@ -407,14 +444,30 @@ function ServiceRequestsPanel({ auth, mode }) {
       )}
 
       <div className="request-list">
-        {isLoading || isFetching ? (
-          <div className="data-empty">Loading service requests.</div>
+        {isInitialLoading ? (
+          <AsyncState
+            compact
+            isLoading
+            message="Fetching service request records."
+            title="Loading service requests"
+          />
         ) : isError ? (
-          <div className="data-alert danger">Service requests could not load.</div>
+          <AsyncState
+            actionLabel="Retry"
+            compact
+            message="Service requests could not load."
+            onAction={() => refetch()}
+            title="Request error"
+            tone="danger"
+          />
         ) : requests.length > 0 ? (
           requests.map((request) => renderRequest(request))
         ) : (
-          <div className="data-empty">No service requests.</div>
+          <AsyncState
+            compact
+            message="No service requests are in this workspace."
+            title="No service requests"
+          />
         )}
       </div>
     </div>

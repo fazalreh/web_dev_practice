@@ -751,6 +751,128 @@ h2 {
   padding: 0.9rem;
 }
 
+.async-state {
+  align-items: center;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 5rem;
+  padding: 0.95rem;
+}
+
+.async-state.compact {
+  min-height: 4.25rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.async-state.danger {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.async-state.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.async-state-icon {
+  align-items: center;
+  background: var(--card-bg);
+  border-radius: 8px;
+  color: var(--accent);
+  display: inline-flex;
+  height: 2.4rem;
+  justify-content: center;
+  width: 2.4rem;
+}
+
+.async-state.danger .async-state-icon {
+  color: var(--danger-text);
+}
+
+.async-state.success .async-state-icon {
+  color: var(--success-text);
+}
+
+.async-state-copy {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.async-state-copy strong {
+  font-size: 0.95rem;
+}
+
+.async-state-copy p {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.async-state.danger .async-state-copy p,
+.async-state.success .async-state-copy p {
+  color: currentColor;
+}
+
+.health-grid .async-state {
+  grid-column: 1 / -1;
+}
+
+.summary-skeleton {
+  align-content: space-between;
+}
+
+.summary-skeleton .skeleton-line,
+.summary-skeleton .skeleton-pill,
+.customer-profile-card .skeleton-line {
+  animation: shimmer 1100ms ease-in-out infinite alternate;
+  background: linear-gradient(
+    90deg,
+    var(--surface-soft),
+    color-mix(in srgb, var(--accent) 18%, var(--surface-soft)),
+    var(--surface-soft)
+  );
+  border-radius: 999px;
+  display: block;
+  padding: 0;
+}
+
+.summary-skeleton .skeleton-line,
+.customer-profile-card .skeleton-line {
+  align-self: start;
+  height: 0.85rem;
+  justify-self: stretch;
+}
+
+.summary-skeleton .skeleton-line.short,
+.customer-profile-card .skeleton-line.short {
+  width: 45%;
+}
+
+.summary-skeleton .skeleton-line.large {
+  height: 1.8rem;
+  width: 70%;
+}
+
+.summary-skeleton .skeleton-pill {
+  align-self: end;
+  height: 1.75rem;
+  justify-self: start;
+  width: 6.5rem;
+}
+
+@keyframes shimmer {
+  to {
+    opacity: 0.56;
+  }
+}
+
 .spin-icon {
   animation: spin 760ms linear infinite;
 }
@@ -1183,6 +1305,15 @@ h2 {
     flex-wrap: wrap;
   }
 
+  .async-state {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .async-state .secondary-action {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+
   .request-controls {
     justify-content: flex-start;
   }
@@ -1202,7 +1333,10 @@ h2 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .spin-icon {
+  .spin-icon,
+  .summary-skeleton .skeleton-line,
+  .summary-skeleton .skeleton-pill,
+  .customer-profile-card .skeleton-line {
     animation: none;
   }
 }

@@ -13,6 +13,7 @@ import {
 import { useSelector } from 'react-redux'
 
 import { useGetAdminDashboardQuery } from '../app/api/baseApi'
+import AsyncState, { SummarySkeleton } from '../components/feedback/AsyncState'
 import PageHeader from '../components/layout/PageHeader'
 import SummaryCard from '../components/layout/SummaryCard'
 import { selectAuth } from '../features/auth/authSlice'
@@ -45,13 +46,31 @@ function AdminPage() {
   const reviewQueue = dashboard?.reviewQueue ?? []
   const activityItems = dashboard?.activityItems ?? []
   const healthItems = dashboard?.healthItems ?? []
-  const dataStatus = isError
-    ? 'Admin dashboard data could not load.'
-    : isLoading
-      ? 'Loading admin dashboard data.'
-      : isFetching
-        ? 'Refreshing admin dashboard data.'
-        : `Dashboard synced ${dashboard?.updatedAt ?? 'now'}.`
+  const isInitialLoading = isLoading && !dashboard
+  const isRefreshing = isFetching && !isInitialLoading
+  const dashboardStatus = isError
+    ? {
+        message: 'The admin dashboard could not load.',
+        tone: 'danger',
+        title: 'Dashboard error',
+      }
+    : isInitialLoading
+      ? {
+          isLoading: true,
+          message: 'Fetching metrics, review queue, and controls.',
+          title: 'Loading admin dashboard',
+        }
+      : isRefreshing
+        ? {
+            isLoading: true,
+            message: 'Refreshing the latest admin data.',
+            title: 'Syncing dashboard',
+          }
+        : {
+            message: `Last sync ${dashboard?.updatedAt ?? 'now'}.`,
+            tone: 'success',
+            title: 'Dashboard synced',
+          }
 
   return (
     <div className="page-stack">
@@ -88,18 +107,30 @@ function AdminPage() {
 
       <section className="summary-grid" aria-label="Admin summary">
         <SummaryCard label="Role" meta="Workspace scope" tone="success" value={roleLabel} />
-        {adminStats.map((stat) => (
-          <SummaryCard
-            key={stat.label}
-            label={stat.label}
-            meta={stat.meta}
-            tone={stat.tone}
-            value={stat.value}
-          />
-        ))}
+        {isInitialLoading ? (
+          <SummarySkeleton count={3} />
+        ) : (
+          adminStats.map((stat) => (
+            <SummaryCard
+              key={stat.label}
+              label={stat.label}
+              meta={stat.meta}
+              tone={stat.tone}
+              value={stat.value}
+            />
+          ))
+        )}
       </section>
 
-      <div className={isError ? 'data-alert danger' : 'data-alert'}>{dataStatus}</div>
+      <AsyncState
+        actionLabel="Retry"
+        compact
+        isLoading={dashboardStatus.isLoading}
+        message={dashboardStatus.message}
+        onAction={isError ? () => refetch() : undefined}
+        title={dashboardStatus.title}
+        tone={dashboardStatus.tone}
+      />
 
       <section className="admin-dashboard-grid">
         <div className="dashboard-panel wide-panel">
@@ -109,7 +140,14 @@ function AdminPage() {
           </div>
 
           <div className="review-list">
-            {reviewQueue.length > 0 ? (
+            {isInitialLoading ? (
+              <AsyncState
+                compact
+                isLoading
+                message="Fetching approval items."
+                title="Loading review queue"
+              />
+            ) : reviewQueue.length > 0 ? (
               reviewQueue.map((item) => (
                 <article className="review-row" key={item.title}>
                   <div className="review-main">
@@ -130,7 +168,7 @@ function AdminPage() {
                 </article>
               ))
             ) : (
-              <div className="data-empty">No pending reviews.</div>
+              <AsyncState compact message="The queue is clear." title="No pending reviews" />
             )}
           </div>
         </div>
@@ -142,21 +180,32 @@ function AdminPage() {
           </div>
 
           <div className="activity-list">
-            {activityItems.map((item) => {
-              const Icon = activityIcons[item.icon] ?? Activity
+            {isInitialLoading ? (
+              <AsyncState
+                compact
+                isLoading
+                message="Fetching recent changes."
+                title="Loading activity"
+              />
+            ) : activityItems.length > 0 ? (
+              activityItems.map((item) => {
+                const Icon = activityIcons[item.icon] ?? Activity
 
-              return (
-                <article className="activity-item" key={item.title}>
-                  <span className="activity-icon">
-                    <Icon aria-hidden="true" size={18} />
-                  </span>
-                  <div>
-                    <strong>{item.title}</strong>
-                    <p>{item.meta}</p>
-                  </div>
-                </article>
-              )
-            })}
+                return (
+                  <article className="activity-item" key={item.title}>
+                    <span className="activity-icon">
+                      <Icon aria-hidden="true" size={18} />
+                    </span>
+                    <div>
+                      <strong>{item.title}</strong>
+                      <p>{item.meta}</p>
+                    </div>
+                  </article>
+                )
+              })
+            ) : (
+              <AsyncState compact message="No recent admin changes." title="No activity" />
+            )}
           </div>
         </div>
 
@@ -169,17 +218,28 @@ function AdminPage() {
           </div>
 
           <div className="health-grid">
-            {healthItems.map((item) => {
-              const Icon = healthIcons[item.icon] ?? Activity
+            {isInitialLoading ? (
+              <AsyncState
+                compact
+                isLoading
+                message="Checking admin controls."
+                title="Loading controls"
+              />
+            ) : healthItems.length > 0 ? (
+              healthItems.map((item) => {
+                const Icon = healthIcons[item.icon] ?? Activity
 
-              return (
-                <article className="health-item" key={item.label}>
-                  <Icon aria-hidden="true" size={19} />
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </article>
-              )
-            })}
+                return (
+                  <article className="health-item" key={item.label}>
+                    <Icon aria-hidden="true" size={19} />
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </article>
+                )
+              })
+            ) : (
+              <AsyncState compact message="No control status available." title="No controls" />
+            )}
           </div>
         </div>
       </section>
