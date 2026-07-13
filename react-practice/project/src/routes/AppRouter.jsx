@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import App from '../App'
+import ProtectedRoute from '../features/auth/ProtectedRoute'
+import PublicOnlyRoute from '../features/auth/PublicOnlyRoute'
 import AdminPage from '../pages/AdminPage'
 import CustomerPage from '../pages/CustomerPage'
 import HomePage from '../pages/HomePage'
@@ -19,19 +21,35 @@ const router = createBrowserRouter([
       },
       {
         path: 'admin',
-        element: <AdminPage />,
+        element: (
+          <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'customer',
-        element: <CustomerPage />,
+        element: (
+          <ProtectedRoute>
+            <CustomerPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'login',
-        element: <LoginPage />,
+        element: (
+          <PublicOnlyRoute>
+            <LoginPage />
+          </PublicOnlyRoute>
+        ),
       },
       {
         path: 'signup',
-        element: <SignupPage />,
+        element: (
+          <PublicOnlyRoute>
+            <SignupPage />
+          </PublicOnlyRoute>
+        ),
       },
       {
         path: '*',

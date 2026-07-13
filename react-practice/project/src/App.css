@@ -449,6 +449,22 @@ h2 {
   place-items: center;
 }
 
+.route-state {
+  display: grid;
+  min-height: calc(100vh - 8.5rem);
+  place-items: center;
+}
+
+.route-state-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  max-width: 34rem;
+  padding: 1.35rem;
+  width: min(100%, 34rem);
+}
+
 .auth-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
