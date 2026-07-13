@@ -320,6 +320,11 @@ h2 {
   color: var(--warning-text);
 }
 
+.summary-card.danger span {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
 .content-section {
   display: grid;
   gap: 1rem;
@@ -372,6 +377,21 @@ h2 {
   background: var(--surface-soft);
   color: var(--muted);
   padding: 0.5rem 0.65rem;
+}
+
+.task-row.success span {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.task-row.warning span {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.task-row.danger span {
+  background: var(--danger-bg);
+  color: var(--danger-text);
 }
 
 .primary-link {
