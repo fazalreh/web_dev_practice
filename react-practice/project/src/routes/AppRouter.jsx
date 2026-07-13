@@ -4,6 +4,7 @@ import App from '../App'
 import AdminPage from '../pages/AdminPage'
 import CustomerPage from '../pages/CustomerPage'
 import HomePage from '../pages/HomePage'
+import NotFoundPage from '../pages/NotFoundPage'
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: 'customer',
         element: <CustomerPage />,
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },
