@@ -17,7 +17,11 @@ function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const redirectTo = location.state?.from?.pathname ?? '/'
+  const from = location.state?.from
+  const redirectTo = from
+    ? `${from.pathname ?? '/'}${from.search ?? ''}${from.hash ?? ''}`
+    : '/'
+  const routeMessage = location.state?.reason
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -72,6 +76,8 @@ function LoginPage() {
         {auth.status === 'authenticated' && (
           <div className="form-alert success">You are already signed in.</div>
         )}
+
+        {routeMessage && <div className="form-alert warning">{routeMessage}</div>}
 
         {error && <div className="form-alert danger">{error}</div>}
 
