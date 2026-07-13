@@ -557,6 +557,7 @@ h2 {
 .auth-form input:disabled,
 .auth-form select:disabled,
 .primary-action:disabled,
+.secondary-action:disabled,
 .icon-button:disabled {
   cursor: not-allowed;
   opacity: 0.58;
@@ -721,6 +722,43 @@ h2 {
 .health-item span,
 .health-item strong {
   color: var(--text);
+}
+
+.data-alert,
+.data-empty {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.data-alert {
+  background: var(--surface-soft);
+  padding: 0.8rem 0.95rem;
+}
+
+.data-alert.danger {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.data-empty {
+  align-items: center;
+  background: var(--surface-soft);
+  display: flex;
+  min-height: 4.5rem;
+  padding: 0.9rem;
+}
+
+.spin-icon {
+  animation: spin 760ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .customer-action-list,
@@ -1007,5 +1045,11 @@ h2 {
 
   .profile-detail-list strong {
     text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-icon {
+    animation: none;
   }
 }
