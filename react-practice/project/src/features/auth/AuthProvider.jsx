@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient'
+import { getUserRole } from '../../lib/roles'
 import {
   clearSession,
   setAuthChecking,
@@ -14,7 +15,7 @@ function getSessionPayload(session) {
 
   return {
     user,
-    role: user?.user_metadata?.role ?? null,
+    role: getUserRole(user),
   }
 }
 

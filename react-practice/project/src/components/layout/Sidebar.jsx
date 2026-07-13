@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
 import { selectAuth } from '../../features/auth/authSlice'
+import { getRoleLabel } from '../../lib/roles'
 import { navigationItems } from '../../routes/navigation'
 
 function Sidebar({ isOpen, onClose }) {
   const auth = useSelector(selectAuth)
   const sessionLabel =
     auth.status === 'authenticated'
-      ? auth.user?.email
+      ? `${getRoleLabel(auth.role)} · ${auth.user?.email}`
       : auth.status === 'checking'
         ? 'Checking session'
         : 'Not signed in'

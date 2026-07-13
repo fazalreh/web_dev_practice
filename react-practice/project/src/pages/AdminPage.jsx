@@ -20,7 +20,7 @@ function AdminPage() {
       <section className="summary-grid" aria-label="Admin summary">
         <SummaryCard label="Role" meta="Workspace scope" value="Admin" />
         <SummaryCard label="Queues" meta="Open areas" value="3" />
-        <SummaryCard label="Access" meta="Auth pending" tone="warning" value="Pending" />
+        <SummaryCard label="Access" meta="Admin role required" tone="success" value="Protected" />
       </section>
 
       <section className="content-section">

@@ -1,5 +1,5 @@
 import { getSupabaseClient } from '../../lib/supabaseClient'
-import { USER_ROLES } from '../../lib/roles'
+import { normalizeUserRole, USER_ROLES } from '../../lib/roles'
 
 function normalizeEmail(email) {
   return email.trim().toLowerCase()
@@ -26,7 +26,7 @@ export async function signUpWithEmail({
     password,
     options: {
       data: {
-        role,
+        role: normalizeUserRole(role),
       },
     },
   })
