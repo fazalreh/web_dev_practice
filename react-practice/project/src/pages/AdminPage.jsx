@@ -16,6 +16,7 @@ import { useGetAdminDashboardQuery } from '../app/api/baseApi'
 import PageHeader from '../components/layout/PageHeader'
 import SummaryCard from '../components/layout/SummaryCard'
 import { selectAuth } from '../features/auth/authSlice'
+import ServiceRequestsPanel from '../features/requests/ServiceRequestsPanel'
 import { getRoleLabel, ROLE_LABELS, USER_ROLES } from '../lib/roles'
 
 const activityIcons = {
@@ -158,6 +159,8 @@ function AdminPage() {
             })}
           </div>
         </div>
+
+        <ServiceRequestsPanel auth={auth} mode={USER_ROLES.ADMIN} />
 
         <div className="dashboard-panel full-panel">
           <div className="section-heading">

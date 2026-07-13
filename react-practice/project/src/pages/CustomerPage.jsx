@@ -17,6 +17,7 @@ import { useGetCustomerDashboardQuery } from '../app/api/baseApi'
 import PageHeader from '../components/layout/PageHeader'
 import SummaryCard from '../components/layout/SummaryCard'
 import { selectAuth } from '../features/auth/authSlice'
+import ServiceRequestsPanel from '../features/requests/ServiceRequestsPanel'
 import { getRoleLabel, ROLE_LABELS, USER_ROLES } from '../lib/roles'
 
 const actionIcons = {
@@ -179,6 +180,8 @@ function CustomerPage() {
             <strong>Route protected</strong>
           </div>
         </aside>
+
+        <ServiceRequestsPanel auth={auth} mode={USER_ROLES.CUSTOMER} />
 
         <div className="dashboard-panel">
           <div className="section-heading">
