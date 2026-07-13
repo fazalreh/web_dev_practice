@@ -10,7 +10,7 @@ function Sidebar({ isOpen, onClose }) {
   const auth = useSelector(selectAuth)
   const sessionLabel =
     auth.status === 'authenticated'
-      ? `${getRoleLabel(auth.role)} · ${auth.user?.email}`
+      ? `${getRoleLabel(auth.role)} - ${auth.user?.email}`
       : auth.status === 'checking'
         ? 'Checking session'
         : 'Not signed in'
@@ -19,10 +19,10 @@ function Sidebar({ isOpen, onClose }) {
     <aside className={isOpen ? 'sidebar open' : 'sidebar'}>
       <div className="sidebar-header">
         <NavLink className="brand-lockup" onClick={onClose} to="/">
-          <span className="brand-mark">WF</span>
+          <span className="brand-mark">AI</span>
           <span>
-            <strong>Waleed Fazal Sync</strong>
-            <small>React practice</small>
+            <strong>Arbisoft internship 2026</strong>
+            <small>React practice portal</small>
           </span>
         </NavLink>
 

@@ -34,7 +34,7 @@ function AuthControls() {
     return (
       <div className="auth-actions">
         <span className="auth-pill">
-          {auth.user?.email ?? 'Signed in'} · {getRoleLabel(auth.role)}
+          {auth.user?.email ?? 'Signed in'} - {getRoleLabel(auth.role)}
         </span>
         <button
           aria-label="Sign out"
